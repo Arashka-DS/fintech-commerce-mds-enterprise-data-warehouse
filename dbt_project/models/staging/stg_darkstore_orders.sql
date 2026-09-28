@@ -14,7 +14,7 @@ quarantined AS (
 SELECT
     s.order_id,
     s.store_id,
-    s.customer_id,
+    {{ hash_pii('s.customer_id') }} AS masked_customer_token,
     s.total_amount_irr,
     s.order_received_at,
     s.picker_assigned_at,
