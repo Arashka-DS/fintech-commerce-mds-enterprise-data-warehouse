@@ -1,0 +1,29 @@
+version: 2
+
+models:
+  - name: fct_transactions
+    description: "Daily transactional fact table with operational latency metrics."
+    tests:
+      # Elementary Statistical Anomaly Tests
+      - elementary.volume_anomalies:
+          timestamp_column: transaction_created_at
+          time_bucket:
+            period: day
+            count: 1
+          severity: warn
+      - elementary.dimension_anomalies:
+          dimensions:
+            - gateway_type
+            - settlement_status
+          timestamp_column: transaction_created_at
+    columns:
+      - name: transaction_id
+        tests:
+          - unique
+          - not_null
+      - name: customer_dim_key
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_customers')
+              field: customer_dim_key
