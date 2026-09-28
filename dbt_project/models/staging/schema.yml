@@ -1,0 +1,32 @@
+version: 2
+
+sources:
+  - name: raw_fintech
+    database: fintech_dw
+    schema: raw
+    tables:
+      - name: customers
+      - name: transactions
+
+models:
+  - name: stg_customers
+    description: "Cleaned customer staging view with standardized data types."
+    columns:
+      - name: customer_id
+        tests:
+          - unique
+          - not_null
+      - name: national_id
+        tests:
+          - not_null
+
+  - name: stg_transactions
+    description: "Cleaned transaction ledger with standardized timestamps."
+    columns:
+      - name: transaction_id
+        tests:
+          - unique
+          - not_null
+      - name: amount
+        tests:
+          - not_null
