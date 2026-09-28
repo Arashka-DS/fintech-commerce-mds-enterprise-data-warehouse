@@ -1,0 +1,59 @@
+name: dbt Production CI
+
+on:
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  dbt_test_suite:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:15-alpine
+        env:
+          POSTGRES_USER: warehouse_admin
+          POSTGRES_PASSWORD: warehouse_password
+          POSTGRES_DB: fintech_dw
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dbt & Elementary
+        run: |
+          pip install --upgrade pip
+          pip install dbt-core==1.8.2 dbt-postgres==1.8.2 elementary-data==0.16.1
+
+      - name: Seed Database Schema
+        run: |
+          PGPASSWORD=warehouse_password psql -h localhost -U warehouse_admin -d fintech_dw -f init_raw_data.sql
+
+      - name: Install dbt Packages
+        working-directory: ./dbt_project
+        run: dbt deps --profiles-dir .
+
+      - name: Run dbt Snapshots (SCD Type 2)
+        working-directory: ./dbt_project
+        run: dbt snapshot --target ci --profiles-dir .
+
+      - name: Compile and Run dbt Models
+        working-directory: ./dbt_project
+        run: dbt run --target ci --profiles-dir .
+
+      - name: Execute dbt Data Contracts & Singular Tests
+        working-directory: ./dbt_project
+        run: dbt test --target ci --profiles-dir .
