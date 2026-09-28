@@ -1,0 +1,21 @@
+fintech_dw:
+  target: dev
+  outputs:
+    dev:
+      type: postgres
+      host: postgres_dw
+      user: warehouse_admin
+      password: warehouse_password
+      port: 5432
+      dbname: fintech_dw
+      schema: public
+      threads: 4
+    ci:
+      type: postgres
+      host: localhost
+      user: warehouse_admin
+      password: warehouse_password
+      port: 5432
+      dbname: fintech_dw
+      schema: ci_testing
+      threads: 4
