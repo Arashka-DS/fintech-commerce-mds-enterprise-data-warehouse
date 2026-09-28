@@ -10,11 +10,18 @@ This warehouse is engineered to support multiple high-throughput business units 
 ## ⚙️ Core Engineering Capabilities
 - **Quarantine Pattern & Data Sanitization:** Invalid OLTP records (e.g., negative order amounts, chronologically reversed timestamps) are diverted to a dead-letter quarantine table for audit.
 - **Incremental Processing:** Fact models utilize 3-day dynamic lookback windows to securely ingest late-arriving batch facts without full-table recomputation.
-- **Elementary Data Observability:** Implements statistical anomaly monitors ($\pm 3\sigma$ volume shifts) over daily fulfillment counts.
-- **CI/CD & Orchestration:** `GitHub Actions` validates dbt singular contracts on PR. `Apache Airflow` orchestrates hourly DAG synchronizations.
+- **Data Observability:** Implements data contracts (e.g., positive order bounds, lifecycle validation) to halt the pipeline if upstream schemas shift unexpectedly.
+- **Orchestration:** `Apache Airflow` orchestrates hourly DAG synchronizations, executing `dbt snapshot`, `dbt run`, and `dbt test` in sequence.
 
 ## 🚀 Quick Start
-```bash
-docker-compose up -d --build
-cd dbt_project
-dbt deps && dbt snapshot && dbt run && dbt test
+1. **Boot the Infrastructure (Airflow, Postgres, Metabase):**
+   ```bash
+   docker-compose up -d --build
+   ```
+   
+2. **Access the Interfaces:**
+
+**Apache Airflow UI:** Navigate to `http://localhost:8080` (admin/admin). Toggle the `enterprise_mds_elt_pipeline` DAG to execute the ELT run.
+
+**Metabase BI:** Navigate to `http://localhost:3000` to visualize the resulting Kimball Star Schemas.
+
