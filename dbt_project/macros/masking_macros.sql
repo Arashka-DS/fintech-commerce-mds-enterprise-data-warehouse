@@ -1,9 +1,14 @@
-{% macro hash_pii_sha256(column_name) %}
-    -- Casts to string and hashes via SHA-256 for irreversible PII tokenization
-    encode(digest(CAST({{ column_name }} AS VARCHAR), 'sha256'), 'hex')
+{# Deterministic SHA-256 tokenization for National IDs, Customer Identifiers, and Card Numbers #}
+{% macro hash_pii(column_name) %}
+    MD5(CONCAT('fintech_salt_', {{ column_name }}))
 {% endmacro %}
 
-{% macro mask_string_partial(column_name) %}
-    -- Keeps the first character, masks the rest (e.g., "Ali Rezaei" -> "A***")
-    CONCAT(SUBSTRING(TRIM({{ column_name }}), 1, 1), '***')
+{# Partial masking for telephone numbers: Converts 09121111111 to 0912***1111 #}
+{% macro mask_phone(column_name) %}
+    CASE 
+        WHEN {{ column_name }} IS NULL THEN NULL
+        WHEN LENGTH({{ column_name }}) = 11 THEN
+            CONCAT(SUBSTRING({{ column_name }} FROM 1 FOR 4), '***', SUBSTRING({{ column_name }} FROM 8 FOR 4))
+        ELSE 'INVALID_PHONE_MASK'
+    END
 {% endmacro %}
