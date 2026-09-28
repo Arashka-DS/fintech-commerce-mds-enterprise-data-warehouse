@@ -1,21 +1,21 @@
-fintech_dw:
+mds_warehouse:
   target: dev
   outputs:
     dev:
       type: postgres
-      host: postgres_dw
-      user: warehouse_admin
-      password: warehouse_password
-      port: 5432
-      dbname: fintech_dw
-      schema: public
       threads: 4
+      host: postgres_mds
+      port: 5432
+      user: airflow
+      pass: airflow
+      dbname: airflow
+      schema: analytics
     ci:
       type: postgres
-      host: localhost
-      user: warehouse_admin
-      password: warehouse_password
+      host: postgres_mds
+      user: airflow
+      password: airflow
       port: 5432
-      dbname: fintech_dw
+      dbname: mds_warehouse
       schema: ci_testing
       threads: 4
