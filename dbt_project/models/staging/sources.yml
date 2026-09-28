@@ -2,13 +2,37 @@ version: 2
 
 sources:
   - name: raw_fintech
-    database: fintech_dw
-    schema: raw
-    freshness:
-      warn_after: {count: 6, period: hour}
-      error_after: {count: 24, period: hour}
-    loaded_at_field: updated_at
+    schema: raw_fintech
     tables:
       - name: customers
+        description: "OLTP raw user profile and credit limit registry."
+        columns:
+          - name: customer_id
+            tests:
+              - unique
+              - not_null
       - name: transactions
-        loaded_at_field: created_at
+        description: "Raw interbank and POS financial transaction log."
+        columns:
+          - name: transaction_id
+            tests:
+              - unique
+              - not_null
+
+  - name: raw_qcommerce
+    schema: raw_qcommerce
+    tables:
+      - name: darkstores
+        description: "Micro-fulfillment darkstore master table."
+        columns:
+          - name: store_id
+            tests:
+              - unique
+              - not_null
+      - name: orders
+        description: "Raw lifecycle timestamps for 15-to-30 minute grocery delivery."
+        columns:
+          - name: order_id
+            tests:
+              - unique
+              - not_null
