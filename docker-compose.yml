@@ -1,0 +1,63 @@
+version: '3.8'
+
+services:
+  postgres_dw:
+    image: postgres:15-alpine
+    container_name: mds_postgres_dw
+    environment:
+      POSTGRES_USER: warehouse_admin
+      POSTGRES_PASSWORD: warehouse_password
+      POSTGRES_DB: fintech_dw
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./init_raw_data.sql:/docker-entrypoint-initdb.d/init_raw_data.sql
+      - pg_dw_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U warehouse_admin -d fintech_dw"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  airflow:
+    image: apache/airflow:2.9.3-python3.11
+    container_name: mds_airflow
+    environment:
+      - AIRFLOW__CORE__LOAD_EXAMPLES=False
+      - AIRFLOW__CORE__EXECUTOR=SequentialExecutor
+      - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=sqlite:////opt/airflow/airflow.db
+      - DBT_PROFILES_DIR=/opt/airflow/dbt_project
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./dbt_project:/opt/airflow/dbt_project
+      - ./requirements.txt:/opt/airflow/requirements.txt
+    user: "${AIRFLOW_UID:-50000}:0"
+    command: >
+      bash -c "pip install --no-cache-dir -r /opt/airflow/requirements.txt &&
+               airflow db init &&
+               airflow users create --username admin --firstname Admin --lastname Admin --role Admin --email admin@fintech.local --password admin &&
+               airflow webserver & airflow scheduler"
+    depends_on:
+      postgres_dw:
+        condition: service_healthy
+
+  metabase:
+    image: metabase/metabase:latest
+    container_name: mds_metabase
+    ports:
+      - "3000:3000"
+    environment:
+      - MB_DB_TYPE=postgres
+      - MB_DB_DBNAME=fintech_dw
+      - MB_DB_PORT=5432
+      - MB_DB_USER=warehouse_admin
+      - MB_DB_PASS=warehouse_password
+      - MB_DB_HOST=postgres_dw
+    depends_on:
+      postgres_dw:
+        condition: service_healthy
+
+volumes:
+  pg_dw_data:
