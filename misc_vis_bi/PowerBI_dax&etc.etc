@@ -1,17 +1,45 @@
 dim_customers [customer_dim_key] (1) <---> (*) fct_transactions [customer_dim_key]
 
+// 1. Total Settled Volume in Billions IRR
 Total_Settled_Volume_IRR = 
 CALCULATE(
-    SUM(fct_transactions[amount_irr]), 
-    fct_transactions[settlement_status] == "SETTLED"
+    SUM(fct_transactions[amount_irr]),
+    fct_transactions[settlement_status] = "SETTLED"
 )
 
-VIP_Settlement_Share = 
+// 2. Gateway Settlement Success Rate (%)
+Settlement_Success_Rate = 
 DIVIDE(
-    CALCULATE([Total_Settled_Volume_IRR], dim_customers[vip_tier] IN {"GOLD", "VIP_PLATINUM"}),
-    [Total_Settled_Volume_IRR],
+    CALCULATE(COUNTROWS(fct_transactions), fct_transactions[settlement_status] = "SETTLED"),
+    COUNTROWS(fct_transactions),
     0
 )
 
+// 3. Average Interbank Settlement Latency (Seconds)
 Avg_Settlement_Latency_Sec = 
-AVERAGE(fct_transactions[settlement_latency_seconds])
+CALCULATE(
+    AVERAGE(fct_transactions[settlement_latency_seconds]),
+    fct_transactions[settlement_status] = "SETTLED"
+)
+
+// 4. VIP Tier Concentration Ratio (Risk Metric)
+VIP_Volume_Concentration_Ratio = 
+VAR TotalVolume = [Total_Settled_Volume_IRR]
+VAR VIPVolume = 
+    CALCULATE(
+        [Total_Settled_Volume_IRR],
+        dim_customers[vip_tier] IN {"GOLD", "VIP_PLATINUM"}
+    )
+RETURN
+    DIVIDE(VIPVolume, TotalVolume, 0)
+
+// 5. Month-over-Month (MoM) Settlement Growth
+Settled_Volume_MoM_Growth = 
+VAR CurrentMonth = [Total_Settled_Volume_IRR]
+VAR PreviousMonth = 
+    CALCULATE(
+        [Total_Settled_Volume_IRR],
+        DATEADD(fct_transactions[transaction_created_at], -1, MONTH)
+    )
+RETURN
+    DIVIDE(CurrentMonth - PreviousMonth, PreviousMonth, 0)
