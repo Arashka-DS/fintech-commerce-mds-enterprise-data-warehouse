@@ -1,0 +1,17 @@
+dim_customers [customer_dim_key] (1) <---> (*) fct_transactions [customer_dim_key]
+
+Total_Settled_Volume_IRR = 
+CALCULATE(
+    SUM(fct_transactions[amount_irr]), 
+    fct_transactions[settlement_status] == "SETTLED"
+)
+
+VIP_Settlement_Share = 
+DIVIDE(
+    CALCULATE([Total_Settled_Volume_IRR], dim_customers[vip_tier] IN {"GOLD", "VIP_PLATINUM"}),
+    [Total_Settled_Volume_IRR],
+    0
+)
+
+Avg_Settlement_Latency_Sec = 
+AVERAGE(fct_transactions[settlement_latency_seconds])
