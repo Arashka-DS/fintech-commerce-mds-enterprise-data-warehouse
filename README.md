@@ -15,13 +15,14 @@ This enterprise warehouse serves two operational domains within a unified Kimbal
 * **Core Problem:** Monitors the strict operational economics of the 15-to-30 minute grocery delivery model across distributed micro-fulfillment centers.
 * **Architecture:** Tracks order lifecycle milestones across four distinct phases:
   $$\text{Total Fulfillment Time} = T_{\text{pick\_latency}} + T_{\text{rider\_wait}} + T_{\text{last\_mile}}$$
+* **SCD Type 2 Fleet Tracking:** Tracks historical shifts in darkstore picker and rider allocation via `snap_darkstores_scd2`.
 * **Root-Cause Attribution:** Classifies SLA violations ($>30\text{ min}$) into operational drivers: `PICKING_BOTTLENECK`, `RIDER_DISPATCH_DELAY`, or `LAST_MILE_TRAFFIC`.
 
 ## ⚙️ Data Engineering & Observability Features
 
 * **Dead-Letter Quarantine Pattern:** Rejects corrupted OLTP records (negative payment amounts, reversed timestamps) and routes them to `staging.quarantine_invalid_orders` and `staging.quarantine_invalid_transactions` without halting downstream pipelines.
 * **Incremental Processing:** Employs dynamic 3-day lookback windows on fact models to ingest late-arriving batch entries without full-table scans.
-* **Singular Data Contracts:** Validates chronological progressions using custom schema assertions (`assert_valid_order_lifecycle.sql`).
+* **Singular Data Contracts:** Validates chronological progressions using custom schema assertions (`assert_valid_order_lifecycle.sql`, `assert_valid_transaction_lifecycle.sql`).
 * **Airflow Orchestrator:** Manages hourly ELT workflows, running `dbt snapshot`, `dbt run`, and `dbt test` sequentially.
 
 ## 🚀 Quick Start
