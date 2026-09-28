@@ -1,30 +1,33 @@
 {{ config(
     materialized='table',
-    schema='quarantine'
+    schema='staging'
 ) }}
 
-WITH source_data AS (
-    SELECT * FROM {{ source('raw_fintech', 'transactions') }}
+WITH raw_orders AS (
+    SELECT * FROM {{ source('raw_qcommerce', 'orders') }}
 )
 
 SELECT
-    transaction_id,
+    order_id,
+    store_id,
     customer_id,
-    amount,
-    currency,
-    gateway_type,
+    total_amount_irr,
+    order_received_at,
+    picker_assigned_at,
+    picking_completed_at,
+    rider_dispatched_at,
+    delivered_to_customer_at,
     status,
-    created_at,
-    completed_at,
-    CURRENT_TIMESTAMP AS quarantined_at,
-    ARRAY_TO_STRING(ARRAY[
-        CASE WHEN amount <= 0 THEN 'NEGATIVE_OR_ZERO_AMOUNT' END,
-        CASE WHEN completed_at < created_at THEN 'INVALID_TEMPORAL_SEQUENCE' END,
-        CASE WHEN status NOT IN ('SETTLED', 'PENDING', 'FAILED') THEN 'UNKNOWN_SETTLEMENT_STATUS' END,
-        CASE WHEN customer_id IS NULL THEN 'ORPHAN_TRANSACTION_MISSING_CUSTOMER' END
-    ], ', ') AS failure_reasons
-FROM source_data
-WHERE amount <= 0
-   OR completed_at < created_at
-   OR status NOT IN ('SETTLED', 'PENDING', 'FAILED')
-   OR customer_id IS NULL
+    CASE
+        WHEN total_amount_irr <= 0 THEN 'NEGATIVE_OR_ZERO_TOTAL'
+        WHEN picking_completed_at < picker_assigned_at THEN 'INVALID_PICKING_TIMESTAMPS'
+        WHEN delivered_to_customer_at < rider_dispatched_at THEN 'INVALID_TRANSIT_TIMESTAMPS'
+        WHEN delivered_to_customer_at < order_received_at THEN 'DELIVERY_PRECEDES_ORDER'
+        ELSE 'OTHER_CORRUPTION'
+    END AS quarantine_reason,
+    CURRENT_TIMESTAMP AS quarantined_at
+FROM raw_orders
+WHERE total_amount_irr <= 0
+   OR picking_completed_at < picker_assigned_at
+   OR delivered_to_customer_at < rider_dispatched_at
+   OR delivered_to_customer_at < order_received_at
