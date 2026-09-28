@@ -1,0 +1,105 @@
+{
+  "name": "FinTech MDS Executive Dark",
+  "dataColors": [
+    "#00E676",
+    "#00E5FF",
+    "#7C4DFF",
+    "#FFB300",
+    "#FF1744",
+    "#90A4AE",
+    "#69F0AE",
+    "#40C4FF"
+  ],
+  "background": "#0A0E17",
+  "foreground": "#ECEFF1",
+  "tableAccent": "#00E5FF",
+  "visualStyles": {
+    "*": {
+      "*": {
+        "background": [
+          {
+            "show": true,
+            "color": { "solid": { "color": "#111827" } },
+            "transparency": 5
+          }
+        ],
+        "border": [
+          {
+            "show": true,
+            "color": { "solid": { "color": "#1F2937" } },
+            "radius": 8
+          }
+        ],
+        "dropShadow": [
+          {
+            "show": true,
+            "color": { "solid": { "color": "#000000" } },
+            "position": "Outer",
+            "blur": 8,
+            "opacity": 35
+          }
+        ],
+        "visualHeader": [
+          {
+            "foreground": { "solid": { "color": "#9CA3AF" } }
+          }
+        ]
+      }
+    },
+    "page": {
+      "*": {
+        "background": [
+          {
+            "color": { "solid": { "color": "#0A0E17" } },
+            "transparency": 0
+          }
+        ]
+      }
+    },
+    "card": {
+      "*": {
+        "labels": [
+          {
+            "color": { "solid": { "color": "#00E676" } },
+            "fontSize": 28,
+            "fontFamily": "Segoe UI Semibold"
+          }
+        ],
+        "categoryAxis": [
+          {
+            "show": true,
+            "color": { "solid": { "color": "#94A3B8" } },
+            "fontSize": 11
+          }
+        ]
+      }
+    },
+    "tableEx": {
+      "*": {
+        "grid": [
+          {
+            "gridVertical": true,
+            "gridVerticalColor": { "solid": { "color": "#1F2937" } },
+            "gridHorizontal": true,
+            "gridHorizontalColor": { "solid": { "color": "#1F2937" } }
+          }
+        ],
+        "columnHeaders": [
+          {
+            "fontColor": { "solid": { "color": "#F8FAFC" } },
+            "backColor": { "solid": { "color": "#1E293B" } },
+            "fontFamily": "Segoe UI Semibold"
+          }
+        ],
+        "values": [
+          {
+            "fontColorPrimary": { "solid": { "color": "#CBD5E1" } },
+            "backColorPrimary": { "solid": { "color": "#111827" } },
+            "fontColorSecondary": { "solid": { "color": "#CBD5E1" } },
+            "backColorSecondary": { "solid": { "color": "#0F172A" } }
+          }
+        ]
+      }
+    }
+  }
+}
