@@ -7,5 +7,4 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 USER airflow
-# Install dbt for PostgreSQL
 RUN pip install --no-cache-dir dbt-postgres==1.8.2
