@@ -23,7 +23,7 @@ SELECT
         WHEN picking_completed_at < picker_assigned_at THEN 'INVALID_PICKING_TIMESTAMPS'
         WHEN delivered_to_customer_at < rider_dispatched_at THEN 'INVALID_TRANSIT_TIMESTAMPS'
         WHEN delivered_to_customer_at < order_received_at THEN 'DELIVERY_PRECEDES_ORDER'
-        ELSE 'OTHER_CORRUPTION'
+        ELSE 'TIMESTAMP_INVERSION'
     END AS quarantine_reason,
     CURRENT_TIMESTAMP AS quarantined_at
 FROM raw_orders
