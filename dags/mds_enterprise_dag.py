@@ -27,16 +27,10 @@ with DAG(
         cwd='/opt/airflow/dbt_project'
     )
 
-    dbt_run = BashOperator(
-        task_id='dbt_run',
-        bash_command='dbt run --profiles-dir .',
+    dbt_build = BashOperator(
+        task_id='dbt_build',
+        bash_command='dbt build --profiles-dir .',
         cwd='/opt/airflow/dbt_project'
     )
 
-    dbt_test = BashOperator(
-        task_id='dbt_test',
-        bash_command='dbt test --profiles-dir .',
-        cwd='/opt/airflow/dbt_project'
-    )
-
-    dbt_snapshot >> dbt_run >> dbt_test
+    dbt_snapshot >> dbt_build
