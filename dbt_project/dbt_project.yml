@@ -1,8 +1,8 @@
-name: 'fintech_mds'
+name: 'mds_warehouse'
 version: '1.0.0'
 config-version: 2
 
-profile: 'fintech_dw'
+profile: 'mds_warehouse'
 
 model-paths: ["models"]
 analysis-paths: ["analyses"]
@@ -16,7 +16,7 @@ clean-targets:
   - "dbt_packages"
 
 models:
-  fintech_mds:
+  mds_warehouse:
     staging:
       +schema: staging
       +materialized: view
