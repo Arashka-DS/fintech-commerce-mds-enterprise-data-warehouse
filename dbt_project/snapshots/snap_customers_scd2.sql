@@ -10,13 +10,6 @@
     )
 }}
 
-SELECT 
-    customer_id,
-    national_id,
-    full_name,
-    vip_tier,
-    credit_limit,
-    updated_at
-FROM {{ source('raw_fintech', 'customers') }}
+SELECT * FROM {{ ref('stg_customers') }}
 
 {% endsnapshot %}
