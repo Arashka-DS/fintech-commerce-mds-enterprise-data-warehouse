@@ -1,5 +1,4 @@
-version: '3.8'
-
+services:
 x-airflow-common: &airflow-common
   build: .
   environment:
@@ -13,7 +12,6 @@ x-airflow-common: &airflow-common
     postgres_mds:
       condition: service_healthy
 
-services:
   postgres_mds:
     image: postgres:15-alpine
     container_name: mds_warehouse
@@ -22,7 +20,7 @@ services:
       POSTGRES_PASSWORD: airflow
       POSTGRES_DB: airflow
     ports:
-      - "5432:5432"
+      - "5532:5432"
     volumes:
       - ./init_raw_data.sql:/docker-entrypoint-initdb.d/init_raw_data.sql
       - pg_mds_data:/var/lib/postgresql/data
@@ -58,6 +56,16 @@ services:
     depends_on:
       - airflow-init
 
+  metabase_db:
+    image: postgres:15
+    container_name: metabase_internal_db
+    environment:
+      POSTGRES_USER: mb_user
+      POSTGRES_PASSWORD: mb_password
+      POSTGRES_DB: metabase_app
+    volumes:
+      - metabase_pg_data:/var/lib/postgresql/data
+
   metabase:
     image: metabase/metabase:latest
     container_name: mds_metabase
@@ -65,14 +73,17 @@ services:
       - "3000:3000"
     environment:
       - MB_DB_TYPE=postgres
-      - MB_DB_DBNAME=airflow
+      - MB_DB_DBNAME=metabase_app
       - MB_DB_PORT=5432
-      - MB_DB_USER=airflow
-      - MB_DB_PASS=airflow
-      - MB_DB_HOST=postgres_mds
+      - MB_DB_USER=mb_user
+      - MB_DB_PASS=mb_password
+      - MB_DB_HOST=metabase_db
     depends_on:
+      metabase_db:
+        condition: service_started
       postgres_mds:
         condition: service_healthy
 
 volumes:
   pg_mds_data:
+  metabase_pg_data:
