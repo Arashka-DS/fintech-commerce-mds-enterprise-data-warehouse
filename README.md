@@ -14,7 +14,7 @@ This enterprise warehouse serves two operational domains within a unified Kimbal
 ### 2. Q-Commerce Darkstore Fulfillment Mart (`analytics.fct_fulfillment_latency`)
 * **Core Problem:** Monitors the strict operational economics of the 15-to-30 minute grocery delivery model across distributed micro-fulfillment centers.
 * **Architecture:** Tracks order lifecycle milestones across four distinct phases:
-  $$\text{Total Fulfillment Time} = T_{\text{pick\_latency}} + T_{\text{rider\_wait}} + T_{\text{last\_mile}}$$
+  $$\text{Total Fulfillment Time} = T_{\text{pick-latency}} + T_{\text{rider-wait}} + T_{\text{last-mile}}$$
 * **SCD Type 2 Fleet Tracking:** Tracks historical shifts in darkstore picker and rider allocation via `snap_darkstores_scd2`.
 * **Root-Cause Attribution:** Classifies SLA violations ($>30\text{ min}$) into operational drivers: `PICKING_BOTTLENECK`, `RIDER_DISPATCH_DELAY`, or `LAST_MILE_TRAFFIC`.
 
