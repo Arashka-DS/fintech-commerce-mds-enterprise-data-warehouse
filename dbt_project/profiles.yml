@@ -7,7 +7,7 @@ mds_warehouse:
       host: postgres_mds
       port: 5432
       user: airflow
-      pass: airflow
+      password: airflow
       dbname: airflow
       schema: analytics
     ci:
