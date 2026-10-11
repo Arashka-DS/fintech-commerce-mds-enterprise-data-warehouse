@@ -1,6 +1,6 @@
 {# Deterministic SHA-256 tokenization for National IDs, Customer Identifiers, and Card Numbers #}
 {% macro hash_pii(column_name) %}
-    MD5(CONCAT('fintech_salt_', {{ column_name }}))
+    encode(digest(CONCAT('fintech_salt_', {{ column_name }}), 'sha256'), 'hex')
 {% endmacro %}
 
 {# Partial masking for telephone numbers: Converts 09121111111 to 0912***1111 #}
