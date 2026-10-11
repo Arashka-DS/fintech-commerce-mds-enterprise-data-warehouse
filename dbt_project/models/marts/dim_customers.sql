@@ -6,7 +6,7 @@ SELECT
     -- Deterministic Surrogate Key for SCD Type 2 dimension matching
     {{ dbt_utils.generate_surrogate_key(['customer_id', 'dbt_valid_from']) }} AS customer_dim_key,
     customer_id,
-    national_id,
+    national_id_hash,
     full_name,
     vip_tier,
     credit_limit,
