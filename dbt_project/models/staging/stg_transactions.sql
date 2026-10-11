@@ -4,11 +4,11 @@ WITH source AS (
 
 SELECT
     transaction_id,
-    customer_id,
+    customer_id AS sender_id, -- Mapped for fct_transactions
     CAST(amount AS NUMERIC(15, 2)) AS amount_irr,
     UPPER(currency) AS currency,
-    UPPER(gateway_type) AS gateway_type,
-    UPPER(status) AS settlement_status,
-    created_at AS transaction_created_at,
-    completed_at AS transaction_completed_at
+    UPPER(gateway_type) AS transaction_type, -- Mapped for fct_transactions
+    UPPER(status) AS status, -- Mapped for fct_transactions
+    created_at AS initiated_at, -- Mapped for fct_transactions
+    completed_at AS settled_at -- Mapped for fct_transactions
 FROM source
