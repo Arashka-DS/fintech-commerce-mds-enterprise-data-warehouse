@@ -51,4 +51,7 @@ SELECT
     END AS sla_breach_primary_cause
 
 FROM orders o
-LEFT JOIN stores s ON o.store_id = s.store_id
+LEFT JOIN stores s 
+  ON o.store_id = s.store_id
+  AND o.order_received_at >= s.dbt_valid_from 
+  AND o.order_received_at < COALESCE(s.dbt_valid_to, '9999-12-31'::timestamp)
