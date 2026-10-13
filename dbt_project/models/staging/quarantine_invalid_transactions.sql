@@ -10,6 +10,7 @@ WITH source_data AS (
 SELECT
     transaction_id,
     customer_id,
+    receiver_id,
     amount,
     currency,
     gateway_type,
