@@ -1,4 +1,6 @@
-dim_customers [customer_dim_key] (1) <---> (*) fct_transactions [customer_dim_key]
+// Updated Relationships (Active & Inactive)
+dim_customers [customer_dim_key] (1) <---> (*) fct_transactions [sender_dim_key] (Active)
+dim_customers [customer_dim_key] (1) <---> (*) fct_transactions [receiver_dim_key] (Inactive)
 
 // 1. Total Settled Volume in Billions IRR
 Total_Settled_Volume_IRR = 
@@ -15,10 +17,10 @@ DIVIDE(
     0
 )
 
-// 3. Average Interbank Settlement Latency (Seconds)
-Avg_Settlement_Latency_Sec = 
+// 3. Average Interbank Settlement Latency (Minutes)
+Avg_Settlement_Latency_Min = 
 CALCULATE(
-    AVERAGE(fct_transactions[settlement_latency_seconds]),
+    AVERAGE(fct_transactions[settlement_latency_minutes]),
     fct_transactions[settlement_status] = "SETTLED"
 )
 
