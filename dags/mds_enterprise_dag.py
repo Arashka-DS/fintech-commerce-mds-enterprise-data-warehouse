@@ -21,6 +21,12 @@ with DAG(
     tags=['dbt', 'fintech', 'q-commerce', 'kimball'],
 ) as dag:
 
+    dbt_deps = BashOperator(
+        task_id='dbt_deps',
+        bash_command='dbt deps --profiles-dir .',
+        cwd='/opt/airflow/dbt_project'
+    )
+    
     dbt_snapshot = BashOperator(
         task_id='dbt_snapshot',
         bash_command='dbt snapshot --profiles-dir .',
@@ -33,4 +39,5 @@ with DAG(
         cwd='/opt/airflow/dbt_project'
     )
 
-    dbt_snapshot >> dbt_build
+    # Updated the execution order
+    dbt_deps >> dbt_snapshot >> dbt_build
