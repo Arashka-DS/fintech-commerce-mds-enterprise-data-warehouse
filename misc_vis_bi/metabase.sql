@@ -4,7 +4,7 @@
 
 -- CARD 1: Paya & Satna Settlement Velocity
 SELECT 
-    DATE_TRUNC('hour', initiated_at) AS settlement_hour,
+    DATE_TRUNC('hour', transaction_created_at) AS settlement_hour, -- FIXED: Was initiated_at
     transaction_type,
     COUNT(transaction_id) AS total_transactions,
     ROUND(SUM(amount_irr) / 1000000000.0, 2) AS volume_in_billion_irr
