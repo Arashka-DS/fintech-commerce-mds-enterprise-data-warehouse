@@ -4,7 +4,8 @@ x-airflow-common: &airflow-common
     - AIRFLOW__CORE__EXECUTOR=LocalExecutor
     - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres_mds/airflow
     - AIRFLOW__CORE__LOAD_EXAMPLES=False
-    - AIRFLOW__WEBSERVER__SECRET_KEY=very_secure_portfolio_secret_key_12345
+    - AIRFLOW__WEBSERVER__SECRET_KEY=very_secure_secret_key_12345
+    - DBT_ALLOW_EXPERIMENTAL_ADAPTERS=true # Asinine Postgres Adapter Warning Pass
   volumes:
     - ./dags:/opt/airflow/dags
     - ./dbt_project:/opt/airflow/dbt_project
