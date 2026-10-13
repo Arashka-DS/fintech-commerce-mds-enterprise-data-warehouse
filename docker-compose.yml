@@ -35,7 +35,10 @@ services:
     container_name: airflow_init
     command: version
     environment:
-      - _AIRFLOW_DB_UPGRADE=true
+      - AIRFLOW__CORE__EXECUTOR=LocalExecutor
+      - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres_mds/airflow
+      - AIRFLOW__CORE__LOAD_EXAMPLES=False
+      - _AIRFLOW_DB_MIGRATE=true # FIXED: Replaced deprecated _AIRFLOW_DB_UPGRADE
       - _AIRFLOW_WWW_USER_CREATE=true
       - _AIRFLOW_WWW_USER_USERNAME=admin
       - _AIRFLOW_WWW_USER_PASSWORD=admin
