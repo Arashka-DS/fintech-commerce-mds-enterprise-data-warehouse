@@ -16,7 +16,7 @@ ORDER BY 1 DESC;
 SELECT 
     customer_id,
     masked_name,
-    credit_limit_irr,
+    credit_limit,
     dbt_valid_from,
     dbt_valid_to,
     CASE WHEN dbt_valid_to IS NULL THEN 'CURRENT' ELSE 'HISTORICAL' END AS record_status
