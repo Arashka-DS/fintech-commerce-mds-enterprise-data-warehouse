@@ -16,7 +16,7 @@ jobs:
           POSTGRES_PASSWORD: airflow
           POSTGRES_DB: mds_warehouse
         ports:
-          - 5532:5432
+          - 5432:5432
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
