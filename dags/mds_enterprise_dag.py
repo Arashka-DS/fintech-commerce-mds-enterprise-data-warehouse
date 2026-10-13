@@ -12,7 +12,7 @@ default_args = {
 }
 
 with DAG(
-    'enterprise_mds_dual_domain_pipeline', # Updated ID
+    'enterprise_mds_dual_domain_pipeline',
     default_args=default_args,
     description='Executes the hourly dual-domain dbt pipeline (FinTech & Q-Commerce)',
     schedule_interval='@hourly',
@@ -26,12 +26,6 @@ with DAG(
         bash_command='dbt deps --profiles-dir .',
         cwd='/opt/airflow/dbt_project'
     )
-    
-    dbt_snapshot = BashOperator(
-        task_id='dbt_snapshot',
-        bash_command='dbt snapshot --profiles-dir .',
-        cwd='/opt/airflow/dbt_project'
-    )
 
     dbt_build = BashOperator(
         task_id='dbt_build',
@@ -39,5 +33,5 @@ with DAG(
         cwd='/opt/airflow/dbt_project'
     )
 
-    # Updated the execution order
-    dbt_deps >> dbt_snapshot >> dbt_build
+    # Simplified, fail-fast execution order
+    dbt_deps >> dbt_build
