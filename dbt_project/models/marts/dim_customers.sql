@@ -8,6 +8,7 @@ SELECT
     customer_id,
     national_id_hash,
     full_name,
+    customer_name_masked AS masked_name,
     vip_tier,
     credit_limit,
     dbt_valid_from AS valid_from,
