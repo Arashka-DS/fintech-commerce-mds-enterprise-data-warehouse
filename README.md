@@ -23,7 +23,7 @@ This enterprise warehouse serves two operational domains within a unified Kimbal
 * **Dead-Letter Quarantine Pattern:** Rejects corrupted OLTP records (negative payment amounts, reversed timestamps) and routes them to `staging.quarantine_invalid_orders` and `staging.quarantine_invalid_transactions` without halting downstream pipelines.
 * **Incremental Processing:** Employs dynamic 3-day lookback windows on fact models to ingest late-arriving batch entries without full-table scans.
 * **Singular Data Contracts:** Validates chronological progressions using custom schema assertions (`assert_valid_order_lifecycle.sql`, `assert_valid_transaction_lifecycle.sql`).
-* **Airflow Orchestrator:** Manages hourly ELT workflows, running `dbt snapshot`, `dbt run`, and `dbt test` sequentially.
+* **Airflow Orchestrator:** Manages hourly ELT workflows, running `dbt snapshot` followed by a unified `dbt build` to compile, run, and test models layer-by-layer for immediate fail-fast error catching.
 
 ## 🚀 Quick Start
 
