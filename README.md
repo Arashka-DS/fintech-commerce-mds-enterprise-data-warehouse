@@ -33,6 +33,6 @@ This enterprise warehouse serves two operational domains within a unified Kimbal
    ```
 
 2. **Access the Web Interfaces:**
-   * **Apache Airflow UI:** `http://localhost:8080` (Credentials: `admin` / `admin`). Unpause and trigger `enterprise_mds_elt_pipeline`.
+   * **Apache Airflow UI:** `http://localhost:8080` (Credentials: `admin` / `admin`). Unpause and trigger `enterprise_mds_dual_domain_pipeline`.
    * **Metabase Analytics:** `http://localhost:3000` (Directly queries the populated `analytics` schema).
    * **PostgreSQL Engine:** Exposed on port `5532` (`airflow` / `airflow` / `airflow`).
