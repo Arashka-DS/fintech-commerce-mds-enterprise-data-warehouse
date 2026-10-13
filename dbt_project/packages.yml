@@ -1,5 +1,8 @@
 packages:
   - package: dbt-labs/dbt_utils
     version: 1.2.0
-  - package: elementary-data/elementary
-    version: 0.16.1
+  # NOTE: ElementaryAI observability temporarily bypassed. 
+  # The dbt v2.0+ Rust engine / compiler currently has an unimplemented `parse_index` 
+  # function for the PostgreSQL adapter, causing a hard engine panic during build.
+  # - package: elementary-data/elementary
+  #   version: 0.16.1
