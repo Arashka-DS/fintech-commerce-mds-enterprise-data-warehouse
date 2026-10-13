@@ -19,6 +19,6 @@ models:
         tests:
           - unique
           - not_null
-      - name: amount
+      - name: amount_irr
         tests:
           - not_null
