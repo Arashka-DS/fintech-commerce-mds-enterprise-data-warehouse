@@ -12,11 +12,11 @@ jobs:
       postgres:
         image: postgres:15-alpine
         env:
-          POSTGRES_USER: warehouse_admin
-          POSTGRES_PASSWORD: warehouse_password
-          POSTGRES_DB: fintech_dw
+          POSTGRES_USER: airflow
+          POSTGRES_PASSWORD: airflow
+          POSTGRES_DB: mds_warehouse
         ports:
-          - 5432:5432
+          - 5532:5432
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
@@ -40,7 +40,7 @@ jobs:
 
       - name: Seed Database Schema
         run: |
-          PGPASSWORD=warehouse_password psql -h localhost -U warehouse_admin -d fintech_dw -f init_raw_data.sql
+          PGPASSWORD=airflow psql -h 127.0.0.1 -U airflow -d mds_warehouse -f init_raw_data.sql
 
       - name: Install dbt Packages
         working-directory: ./dbt_project
