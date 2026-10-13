@@ -4,6 +4,7 @@ x-airflow-common: &airflow-common
     - AIRFLOW__CORE__EXECUTOR=LocalExecutor
     - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres_mds/airflow
     - AIRFLOW__CORE__LOAD_EXAMPLES=False
+    - AIRFLOW__WEBSERVER__SECRET_KEY=very_secure_portfolio_secret_key_12345
   volumes:
     - ./dags:/opt/airflow/dags
     - ./dbt_project:/opt/airflow/dbt_project
@@ -38,7 +39,7 @@ services:
       - AIRFLOW__CORE__EXECUTOR=LocalExecutor
       - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres_mds/airflow
       - AIRFLOW__CORE__LOAD_EXAMPLES=False
-      - _AIRFLOW_DB_MIGRATE=true # FIXED: Replaced deprecated _AIRFLOW_DB_UPGRADE
+      - _AIRFLOW_DB_MIGRATE=true # Replaced deprecated _AIRFLOW_DB_UPGRADE
       - _AIRFLOW_WWW_USER_CREATE=true
       - _AIRFLOW_WWW_USER_USERNAME=admin
       - _AIRFLOW_WWW_USER_PASSWORD=admin
