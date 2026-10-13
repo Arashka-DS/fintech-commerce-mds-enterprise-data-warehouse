@@ -1,6 +1,6 @@
 {{ config(
     materialized='table',
-    schema='staging' -- Fixed schema from 'quarantine' to match dbt_project.yml
+    schema='staging' 
 ) }}
 
 WITH source_data AS (
