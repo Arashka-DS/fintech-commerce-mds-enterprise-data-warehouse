@@ -2,6 +2,6 @@
 SELECT 
     transaction_id,
     transaction_created_at,
-    transaction_completed_at
+    settled_at
 FROM {{ ref('fct_transactions') }}
-WHERE transaction_completed_at < transaction_created_at
+WHERE settled_at < transaction_created_at
