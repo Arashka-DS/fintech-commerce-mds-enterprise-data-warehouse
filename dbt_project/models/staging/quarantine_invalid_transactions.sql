@@ -1,6 +1,6 @@
 {{ config(
     materialized='table',
-    schema='quarantine'
+    schema='staging' -- Fixed schema from 'quarantine' to match dbt_project.yml
 ) }}
 
 WITH source_data AS (
@@ -9,23 +9,22 @@ WITH source_data AS (
 
 SELECT
     transaction_id,
-    customer_id,
+    sender_id,
     receiver_id,
-    amount,
-    currency,
-    gateway_type,
+    amount_irr,
+    transaction_type,
     status,
-    created_at,
-    completed_at,
+    initiated_at,
+    settled_at,
     CURRENT_TIMESTAMP AS quarantined_at,
     ARRAY_TO_STRING(ARRAY[
-        CASE WHEN amount <= 0 THEN 'NEGATIVE_OR_ZERO_AMOUNT' END,
-        CASE WHEN completed_at < created_at THEN 'INVALID_TEMPORAL_SEQUENCE' END,
+        CASE WHEN amount_irr <= 0 THEN 'NEGATIVE_OR_ZERO_AMOUNT' END,
+        CASE WHEN settled_at < initiated_at THEN 'INVALID_TEMPORAL_SEQUENCE' END,
         CASE WHEN status NOT IN ('SETTLED', 'PENDING', 'FAILED') THEN 'UNKNOWN_SETTLEMENT_STATUS' END,
-        CASE WHEN customer_id IS NULL THEN 'ORPHAN_TRANSACTION_MISSING_CUSTOMER' END
+        CASE WHEN sender_id IS NULL THEN 'ORPHAN_TRANSACTION_MISSING_SENDER' END
     ], ', ') AS failure_reasons
 FROM source_data
-WHERE amount <= 0
-   OR completed_at < created_at
+WHERE amount_irr <= 0
+   OR settled_at < initiated_at
    OR status NOT IN ('SETTLED', 'PENDING', 'FAILED')
-   OR customer_id IS NULL
+   OR sender_id IS NULL
