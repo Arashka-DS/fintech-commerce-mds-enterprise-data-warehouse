@@ -12,7 +12,7 @@ mds_warehouse:
       schema: analytics
     ci:
       type: postgres
-      host: postgres_mds
+      host: 127.0.0.1
       user: airflow
       password: airflow
       port: 5432
