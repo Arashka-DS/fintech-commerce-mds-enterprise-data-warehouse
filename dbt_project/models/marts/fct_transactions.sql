@@ -7,7 +7,7 @@
 WITH stg_transactions AS (
     SELECT * FROM {{ ref('stg_transactions') }}
     {% if is_incremental() %}
-        WHERE initiated_at >= (SELECT COALESCE(MAX(initiated_at), '1970-01-01') - INTERVAL '3 days' FROM {{ this }})
+        WHERE initiated_at >= (SELECT COALESCE(MAX(transaction_created_at), '1970-01-01') - INTERVAL '3 days' FROM {{ this }})
     {% endif %}
 ),
 dim_customers AS (
