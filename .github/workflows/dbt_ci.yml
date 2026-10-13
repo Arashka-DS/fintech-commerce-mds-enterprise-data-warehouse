@@ -50,10 +50,6 @@ jobs:
         working-directory: ./dbt_project
         run: dbt snapshot --target ci --profiles-dir .
 
-      - name: Compile and Run dbt Models
+      - name: Build and Test dbt Models
         working-directory: ./dbt_project
-        run: dbt run --target ci --profiles-dir .
-
-      - name: Execute dbt Data Contracts & Singular Tests
-        working-directory: ./dbt_project
-        run: dbt test --target ci --profiles-dir .
+        run: dbt build --target ci --profiles-dir .
