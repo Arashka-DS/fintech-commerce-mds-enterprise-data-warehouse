@@ -13,7 +13,7 @@ models:
           severity: warn
       - elementary.dimension_anomalies:
           dimensions:
-            - gateway_type
+            - transaction_type # FIXED: Was gateway_type
             - settlement_status
           timestamp_column: transaction_created_at
     columns:
@@ -21,7 +21,13 @@ models:
         tests:
           - unique
           - not_null
-      - name: customer_dim_key
+      - name: sender_dim_key # FIXED: Was customer_dim_key
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_customers')
+              field: customer_dim_key
+      - name: receiver_dim_key # ADDED: Ensure receiver is also validated
         tests:
           - not_null
           - relationships:
